@@ -17,7 +17,7 @@ const schema = zod.object({
   email: string().max(255).email(),
   phone: string().max(20).min(1).optional(),
   picture: string().optional(),
-  userid: string().uuid(),
+  userid: string().uuid().optional(),
 });
 
 const updateUserWithPasswordSchema = object({
@@ -26,36 +26,112 @@ const updateUserWithPasswordSchema = object({
   newPassword: string().max(64).min(8),
 });
 
+// async function loginUser(req: NextRequest, event: NextFetchEvent) {
+//   const body = await extractBody(req);
+
+//   const { email, password, username } = body;
+//   console.log(email, password, username);
+
+//   const pool = new Pool({
+//     connectionString: process.env.DATABASE_URL,
+//   });
+
+//   // Query the database to find the user with the provided email
+//   const getUserQuery = sqlstring.format(
+//     `SELECT * FROM users WHERE email = ? and username = ?;`,
+//     [email, username]
+//   );
+//   console.log("getUserQuery", getUserQuery);
+
+//   try {
+//     const { rows } = await pool.query(getUserQuery);
+
+//     if (rows.length === 0) {
+//       const errorMessage = JSON.stringify({
+//         message: "Invalid email or password",
+//       });
+//       return new Response(errorMessage, { status: 401 });
+//     }
+
+//     const user = rows[0];
+
+//     if (user.password !== password) {
+//       const errorMessage = JSON.stringify({
+//         message: "Invalid email or password",
+//       });
+//       return new Response(errorMessage, { status: 401 });
+//     }
+
+//     const successMessage = JSON.stringify({ message: "Login successful" });
+//     return new Response(successMessage, { status: 200 });
+//   } catch (error) {
+//     console.error("Error querying database:", error);
+//     const errorMessage = JSON.stringify({ message: "Internal server error" });
+//     return new Response(errorMessage, { status: 500 });
+//   }
+// }
+
 async function createUserHandler(req: NextRequest, event: NextFetchEvent) {
   const body = await extractBody(req);
 
   const { username, password, email, phone, picture } = schema.parse(body);
 
-  console.log(body);
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
   });
-  const userId = uuidv4();
 
-  const sql = sqlstring.format(
-    ` INSERT INTO "user" (userid, username, password, email, noph, picture) 
-      VALUES (?, ?, ?, ?, ?, ?);
-    `,
-    [userId, username, password, email, phone, picture]
-  );
+  try {
+    // Check if the username, email, or phone number already exists in the database
+    const checkExistingUserQuery = sqlstring.format(
+      `SELECT * FROM "user" WHERE username = ? OR email = ? OR noph = ?;`,
+      [username, email, phone]
+    );
 
-  console.log("sql", sql);
+    const { rows: existingUsers } = await pool.query(checkExistingUserQuery);
 
-  await pool.query(sql);
+    if (existingUsers.length > 0) {
+      // At least one of username, email, or phone number already exists
+      const duplicateFields = existingUsers
+        .map((user) => {
+          if (user.username === username) return "username";
+          if (user.email === email) return "email";
+          if (user.noph === phone) return "phone";
+          return null;
+        })
+        .filter((field) => field !== null);
 
-  event.waitUntil(pool.end());
-
-  return new Response(
-    JSON.stringify({ username, password, email, phone, picture }),
-    {
-      status: 200,
+      return new Response(
+        JSON.stringify({
+          message: `The following fields are already registered: ${duplicateFields.join(
+            ", "
+          )}`,
+        }),
+        { status: 400 }
+      );
     }
-  );
+
+    // No duplicate entries found, proceed with user creation
+    const userId = uuidv4();
+
+    const sql = sqlstring.format(
+      `INSERT INTO "user" (userid, username, password, email, noph, picture) 
+      VALUES (?, ?, ?, ?, ?, ?);`,
+      [userId, username, password, email, phone, picture]
+    );
+
+    await pool.query(sql);
+
+    return new Response(JSON.stringify({ username, email, phone, picture }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    return new Response(JSON.stringify({ message: "Failed to create user" }), {
+      status: 500,
+    });
+  } finally {
+    event.waitUntil(pool.end());
+  }
 }
 
 async function readUserHandler(req: NextRequest, event: NextFetchEvent) {
@@ -213,6 +289,10 @@ export default async function handler(req: NextRequest, event: NextFetchEvent) {
   if (req.method === "POST") {
     return createUserHandler(req, event);
   }
+
+  // if (req.method === "POST") {
+  //   return loginUser(req, event);
+  // }
 
   if (req.method === "GET") {
     return readUserHandler(req, event);

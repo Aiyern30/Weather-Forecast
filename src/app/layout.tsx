@@ -1,5 +1,4 @@
 "use client";
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
@@ -12,6 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const [queryClient, setQueryClient] = useState(null);
+  const [isLoggined, setIsLoggined] = useState(false);
 
   useEffect(() => {
     const { QueryClient, QueryClientProvider } = require("react-query");
@@ -25,7 +25,10 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 
   return (
     <html lang="en">
-      <body className="flex gap-[25px] p-[25px]">
+      <body
+        className="flex gap-[25px] p-[25px]"
+        suppressHydrationWarning={true}
+      >
         {queryClient && (
           <ThemeProvider
             attribute="class"
@@ -34,7 +37,7 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
             disableTransitionOnChange
           >
             <QueryClientProvider client={queryClient}>
-              <Sidebar />
+              <Sidebar isLoggined={isLoggined} />
               <div className="bg-[rgb(246,246,248)] w-full rounded-xl p-[30px] overflow-auto min-w-[1600px]">
                 {children}
               </div>
