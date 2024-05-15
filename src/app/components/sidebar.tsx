@@ -23,7 +23,12 @@ const information = [
   { link: "/Settings", title: "Settings", icon: CiSettings },
 ];
 
-export const Sidebar = () => {
+interface login {
+  isLoggined: boolean;
+}
+
+export const Sidebar = ({ isLoggined }: login) => {
+  console.log("login", isLoggined);
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useEffect(() => {
@@ -52,6 +57,7 @@ export const Sidebar = () => {
         </div>
       </div>
       <Separator />
+
       {information.map((item, index) => (
         <Navigation
           key={index}
