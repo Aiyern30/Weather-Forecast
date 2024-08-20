@@ -1,4 +1,9 @@
 "use client";
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useMutation } from "react-query";
+import AlertUI from "./alert";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -11,14 +16,12 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Mail, Trophy } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import AlertUI from "./alert";
-import { useRouter } from "next/router";
-import { Sidebar } from "./components/sidebar";
+import { Mail } from "lucide-react";
+import { LoginContext } from "@/app/LoginContext"; // Import the context
+import {
+  loadThemeFromLocalStorage,
+  applyTheme,
+} from "../../pages/api/utils/theme"; // Import utility functions
 
 interface Profile {
   username: string;
@@ -33,9 +36,9 @@ interface Login {
   password: string;
 }
 
-const page = () => {
+const Page = () => {
   const [page, setPage] = useState<number>(0);
-  const [isLoginned, setIsLoginned] = useState<boolean>(false);
+  const { setIsLoggined } = useContext(LoginContext); // Access setIsLoggined from context
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const {
@@ -92,6 +95,7 @@ const page = () => {
       email: "",
     },
   });
+  const router = useRouter();
 
   const mutation2 = useMutation(async (data: Login) => {
     const response = await fetch(`/api/login`, {
@@ -107,7 +111,8 @@ const page = () => {
       setTimeout(() => setShowError(false), 3000);
       throw new Error("Failed to login account !!");
     } else {
-      setIsLoginned(true); // Update the login state
+      setIsLoggined(true); // Update the login state
+      router.push("/Dashboard");
     }
   });
 
@@ -116,7 +121,6 @@ const page = () => {
     try {
       await mutation2.mutateAsync(data);
       setShowAlert(true);
-      setIsLoginned(true);
       setTimeout(() => {
         setShowAlert(false);
         setPage(0);
@@ -128,13 +132,17 @@ const page = () => {
     }
   };
 
+  useEffect(() => {
+    const theme = loadThemeFromLocalStorage();
+    applyTheme(theme);
+  }, []);
+
   return (
     <div className="flex justify-center items-center min-h-[800px]">
       <div className="w-[1000px] min-h-[500px] flex relative">
-        {page == 0 && (
+        {page === 0 && (
           <>
             <Card className="w-1/2 bg-green-300"></Card>
-
             <Card className="w-1/2 flex items-center justify-center">
               <form onSubmit={handleLogin(onSubmitLogin)}>
                 <div>
@@ -263,33 +271,33 @@ const page = () => {
             </Card>
           </>
         )}
-        {page == 1 && (
+        {page === 1 && (
           <>
             <Card className="w-1/2 flex items-center justify-center">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <CardHeader>
                   <CardTitle className="text-center">
-                    Create an account
+                    Register an account
                   </CardTitle>
                   <CardDescription className="text-center">
-                    Enter your email below to create your account
+                    Enter your details below to create an account
                   </CardDescription>
                 </CardHeader>
                 {showAlert && (
                   <AlertUI
                     error={false}
-                    message="Successfully register an account"
-                    title="Profile Created successfully"
+                    message="Successfully register"
+                    title="Profile registration successfully"
                   />
                 )}
                 {showError && (
                   <AlertUI
                     error={true}
-                    message="Account is exist!"
-                    title="Profile Created unsuccessfully"
+                    message="There was a problem registering the account"
+                    title="Profile registration unsuccessfully"
                   />
                 )}
-                <CardContent className="space-y-2">
+                <CardContent>
                   <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label>Username</Label>
                     <Controller
@@ -306,10 +314,11 @@ const page = () => {
                           message: "Maximum 20 characters only",
                         },
                       }}
-                      render={() => (
+                      render={({ field }) => (
                         <Input
-                          id="Username"
+                          id="username"
                           placeholder="Your Username"
+                          {...field}
                           {...register("username")}
                         />
                       )}
@@ -318,7 +327,6 @@ const page = () => {
                   <span className="text-red-400">
                     {errors.username?.message}
                   </span>
-
                   <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label>Email</Label>
                     <Controller
@@ -347,37 +355,18 @@ const page = () => {
                   </div>
                   <span className="text-red-400">{errors.email?.message}</span>
                   <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label>Phone Number</Label>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      rules={{
-                        required: "Phone number is required",
-                        maxLength: {
-                          value: 10,
-                          message: "Phone number format is wrong",
-                        },
-                        minLength: {
-                          value: 10,
-                          message: "Phone number format is wrong",
-                        },
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          placeholder="Your Phone Number"
-                          type="number"
-                          {...register("phone")}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </div>
-                  <span className="text-red-400">{errors.phone?.message}</span>
-                  <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label>Password</Label>
                     <Controller
                       name="password"
                       control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="password"
+                          placeholder="Your Password"
+                          {...field}
+                          {...register("password")}
+                        />
+                      )}
                       rules={{
                         required: "Password is required",
                         minLength: {
@@ -389,28 +378,17 @@ const page = () => {
                           message: "Maximum 64 characters only",
                         },
                       }}
-                      render={() => (
-                        <Input
-                          id="password"
-                          placeholder="Your Password"
-                          {...register("password")}
-                        />
-                      )}
                     />
                   </div>
                   <span className="text-red-400">
                     {errors.password?.message}
                   </span>
-                  <Button className="w-full">Sign Up</Button>
-                  <div className="mb-3 my-0.5 text-center">Or</div>
-                  <Button className="w-full">
-                    <Mail className="mr-2 h-4 w-4" /> Sign Up with Email
-                  </Button>
+                  <Button className="w-full">Register</Button>
                 </CardContent>
                 <Separator />
                 <CardFooter className="">
                   <Button variant="link" onClick={() => setPage(0)}>
-                    Registered account?
+                    Already have an account?
                   </Button>
                 </CardFooter>
               </form>
@@ -423,4 +401,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

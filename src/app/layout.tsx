@@ -6,12 +6,12 @@ import "./globals.css";
 import { Sidebar } from "./components/sidebar";
 import { ThemeProvider } from "./components/theme-provider";
 import { QueryClientProvider } from "react-query";
+import { LoginProvider } from "./LoginContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const [queryClient, setQueryClient] = useState(null);
-  const [isLoggined, setIsLoggined] = useState(false);
 
   useEffect(() => {
     const { QueryClient, QueryClientProvider } = require("react-query");
@@ -26,7 +26,7 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <html lang="en">
       <body
-        className="flex gap-[25px] p-[25px]"
+        className="flex gap-[25px] p-[25px] dark:bg-black"
         suppressHydrationWarning={true}
       >
         {queryClient && (
@@ -37,10 +37,12 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
             disableTransitionOnChange
           >
             <QueryClientProvider client={queryClient}>
-              <Sidebar isLoggined={isLoggined} />
-              <div className="bg-[rgb(246,246,248)] w-full rounded-xl p-[30px] overflow-auto min-w-[1600px]">
-                {children}
-              </div>
+              <LoginProvider>
+                <Sidebar />
+                <div className="bg-[rgb(246,246,248)] w-full rounded-xl p-[30px] overflow-auto min-w-[1600px] dark:bg-slate-800">
+                  {children}
+                </div>
+              </LoginProvider>
             </QueryClientProvider>
           </ThemeProvider>
         )}

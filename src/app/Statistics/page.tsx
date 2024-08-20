@@ -175,9 +175,6 @@ const page = () => {
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [year, setYear] = useState<number>(2024);
-  // const dotenv = require("dotenv");
-
-  // dotenv.config({ path: ".env" });
 
   useEffect(() => {
     fetchForeCastData(defaultCity, category, filter);
@@ -319,7 +316,7 @@ const page = () => {
                 fetchForeCastData(inputCity, value, filter);
               }}
             >
-              <SelectTrigger className="w-[180px] bg-white">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-black">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -328,8 +325,8 @@ const page = () => {
                 <SelectItem value="wind_kph">Wind Speed (km/h)</SelectItem>
                 <SelectItem value="humidity">Humidity (%)</SelectItem>
                 <SelectItem value="uv">UV Index</SelectItem>
-                <SelectItem value="co">CO (Carbon Monoxide)</SelectItem>
-                <SelectItem value="no2">NO2 (Nitrogen Dioxide)</SelectItem>
+                {/* <SelectItem value="co">CO (Carbon Monoxide)</SelectItem>
+                <SelectItem value="no2">NO2 (Nitrogen Dioxide)</SelectItem> */}
               </SelectContent>
             </Select>
             <Select
@@ -339,7 +336,7 @@ const page = () => {
                 fetchForeCastData(inputCity, category, parseInt(value));
               }}
             >
-              <SelectTrigger className="w-[180px] bg-white">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-black">
                 <SelectValue placeholder="Day" />
               </SelectTrigger>
               <SelectContent>
@@ -348,17 +345,17 @@ const page = () => {
                 <SelectItem value="3">3</SelectItem>
                 <SelectItem value="4">4</SelectItem>
                 <SelectItem value="5">5</SelectItem>
-                <SelectItem value="6">6</SelectItem>
+                {/* <SelectItem value="6">6</SelectItem>
                 <SelectItem value="7">7</SelectItem>
                 <SelectItem value="8">8</SelectItem>
                 <SelectItem value="9">9</SelectItem>
-                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="10">10</SelectItem> */}
               </SelectContent>
             </Select>
           </div>
           {!error ? (
             <div className="space-y-5">
-              <div className=" bg-white p-5 rounded-xl">
+              <div className=" bg-white p-5 rounded-xl dark:bg-black">
                 {data && (
                   <AreaCharts x={x} y={y} category={category} day={filter} />
                 )}
@@ -372,7 +369,7 @@ const page = () => {
                         forecastDay?.hour.map((hour, index) => (
                           <div
                             key={index}
-                            className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
+                            className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center dark:bg-black"
                           >
                             {hour.condition.text}
                             <img src={hour.condition.icon} alt="Weather Icon" />

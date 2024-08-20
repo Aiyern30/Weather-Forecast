@@ -33,14 +33,14 @@ export const Navigation = ({
         <Icon
           className={cn(
             active ? "text-[rgba(43,135,209)]" : "text-[#A3A3A3]",
-            "w-8 h-8  group-hover:scale-105 group-hover:text-[rgba(43,135,209)]"
+            "w-8 h-8  group-hover:scale-105 group-hover:text-[rgba(43,135,209)] dark:text-white"
           )}
         ></Icon>
       </div>
       <div
         className={cn(
-          active ? "text-[rgba(43,135,209)]" : "text-[#A3A3A3]",
-          "text-xl group-hover:scale-110 group-hover:text-[rgba(43,135,209)]"
+          active ? "text-[rgba(43,135,209)]" : "text-[#A3A3A3] dark:text-white",
+          "text-xl group-hover:scale-110 group-hover:text-[rgba(43,135,209)] "
         )}
       >
         {title}

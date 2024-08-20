@@ -1,4 +1,3 @@
-// LoginContext.js
 import React, {
   createContext,
   useState,
@@ -12,7 +11,7 @@ interface ContextProps {
   setIsLoggined: Dispatch<SetStateAction<boolean>>;
 }
 
-const LoginContext = createContext<ContextProps>({
+export const LoginContext = createContext<ContextProps>({
   isLoggined: false,
   setIsLoggined: () => {},
 });
@@ -23,6 +22,7 @@ interface Props {
 
 export const LoginProvider = ({ children }: Props) => {
   const [isLoggined, setIsLoggined] = useState(false);
+  console.log("isLoggined", isLoggined);
 
   return (
     <LoginContext.Provider value={{ isLoggined, setIsLoggined }}>
@@ -30,5 +30,3 @@ export const LoginProvider = ({ children }: Props) => {
     </LoginContext.Provider>
   );
 };
-
-export default LoginContext;

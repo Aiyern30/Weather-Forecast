@@ -256,7 +256,6 @@ const Page = () => {
         <TabsList>
           <TabsTrigger value="Account">Account</TabsTrigger>
           <TabsTrigger value="Appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="Favourite">Favourite</TabsTrigger>
         </TabsList>
         <TabsContent value="Account">
           <div className="px-20 border rounded-xl">
@@ -814,89 +813,6 @@ const Page = () => {
             <Button variant="outline" className="flex ml-auto my-5">
               Save Changes
             </Button>
-          </div>
-        </TabsContent>
-        <TabsContent value="Favourite">
-          <div className="px-20 border rounded-xl">
-            <div className="flex flex-col items-center">
-              <div className="header text-3xl text-black dark:text-white">
-                Favourite
-              </div>
-              <div>Manage settings for your weather appearance</div>
-            </div>
-            <Separator className="my-5" />
-            <div className="flex items-center space-x-10">
-              <Card className="w-1/2">
-                <CardHeader>
-                  <CardTitle>Profile Settings</CardTitle>
-                  <CardDescription>
-                    Update your photo and personal details here.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form>
-                    <div className="grid w-full items-center gap-4">
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Username</Label>
-                        <Input id="Username" placeholder="Your Username" />
-                      </div>
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Username</Label>
-                        <Input id="Username" placeholder="Your Username" />
-                      </div>
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Username</Label>
-                        <Input id="Username" placeholder="Your Username" />
-                      </div>
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Username</Label>
-                        <Input id="Username" placeholder="Your Username" />
-                      </div>
-                    </div>
-                  </form>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>Deploy</Button>
-                </CardFooter>
-              </Card>
-              <Card className="w-1/2">
-                <CardHeader>
-                  <CardTitle>Create project</CardTitle>
-                  <CardDescription>
-                    Deploy your new project in one-click.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form>
-                    <div className="grid w-full items-center gap-4">
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Name</Label>
-                        <Input id="name" placeholder="Name of your project" />
-                      </div>
-                      <div className="flex flex-col space-y-1.5">
-                        <Label>Framework</Label>
-                        <Select>
-                          <SelectTrigger id="framework">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent position="popper">
-                            <SelectItem value="next">Next.js</SelectItem>
-                            <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                            <SelectItem value="astro">Astro</SelectItem>
-                            <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </form>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>Deploy</Button>
-                </CardFooter>
-              </Card>
-            </div>
           </div>
         </TabsContent>
       </Tabs>

@@ -1,73 +1,84 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Navigation } from "./navigation";
 import { FaChartBar } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
-import { FiMapPin } from "react-icons/fi";
-import { FaRegCalendarAlt } from "react-icons/fa";
 import { CiSettings } from "react-icons/ci";
 import { MdOutlineLogin } from "react-icons/md";
 
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Separator } from "@/components/ui/Separator";
-import { ModeToggle } from "./toggleDark";
+import { usePathname } from "next/navigation"; // Use next/navigation
+import { LoginContext } from "../LoginContext"; // Import the context
 
 const information = [
-  { link: "../", title: "Login", icon: MdOutlineLogin },
   { link: "/Dashboard", title: "Dashboard", icon: RxDashboard },
   { link: "/Statistics", title: "Statistics", icon: FaChartBar },
-  { link: "/Maps", title: "Maps", icon: FiMapPin },
-  { link: "/Calander", title: "Calander", icon: FaRegCalendarAlt },
+  // { link: "/Maps", title: "Maps", icon: FiMapPin },
+  // { link: "/Calander", title: "Calander", icon: FaRegCalendarAlt },
   { link: "/Settings", title: "Settings", icon: CiSettings },
 ];
 
-interface login {
-  isLoggined: boolean;
-}
+const loginNavigation = { link: "../", title: "Login", icon: MdOutlineLogin };
 
-export const Sidebar = ({ isLoggined }: login) => {
-  console.log("login", isLoggined);
+export const Sidebar = () => {
+  const { isLoggined } = useContext(LoginContext); // Access login state here
+  const pathname = usePathname(); // Use usePathname from next/navigation
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
-
     const index = information.findIndex((item) =>
-      currentPath.includes(item.link)
+      pathname?.includes(item.link)
     );
-
     setActiveIndex(index === -1 ? 0 : index);
-  }, []);
+  }, [pathname]); // Update when pathname changes
 
   const clickNavigation = (index: number) => {
-    setActiveIndex(index === activeIndex ? 0 : index);
+    setActiveIndex(index);
   };
 
   return (
-    <div className={cn("w-[200px] h-auto bg-[#ffffff] rounded-xl")}>
+    <div
+      className={cn(
+        "w-[200px] h-auto bg-[#ffffff] dark:bg-slate-800 rounded-xl"
+      )}
+    >
       <div className="h-[100px] p-20 justify-center flex flex-col items-center space-x-2 cursor-pointer">
         <Avatar className="w-20 h-20 ">
           <AvatarImage src="/logo/logo.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <div className="text-justify text-3xl text-black font-bold">
+        <div className="text-justify text-3xl text-black font-bold dark:text-white">
           Weathery
         </div>
       </div>
       <Separator />
+      {""}
 
-      {information.map((item, index) => (
+      {!isLoggined && (
         <Navigation
-          key={index}
-          link={item.link}
-          title={item.title}
-          icon={item.icon}
-          active={index === activeIndex}
-          handleClick={() => clickNavigation(index)}
+          link={loginNavigation.link}
+          title={loginNavigation.title}
+          icon={loginNavigation.icon}
+          active={activeIndex === -1} // Special case for login page
+          handleClick={() => clickNavigation(-1)}
         />
-      ))}
+      )}
+
+      {isLoggined &&
+        information.map((item, index) => (
+          <Navigation
+            key={index}
+            link={item.link}
+            title={item.title}
+            icon={item.icon}
+            active={index === activeIndex}
+            handleClick={() => clickNavigation(index)}
+          />
+        ))}
     </div>
   );
 };
