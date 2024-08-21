@@ -1,5 +1,6 @@
 import React from "react";
 
+import Image from "next/image";
 interface WeatherIconProps {
   code: number;
   isDay: 0 | 1;
@@ -69,11 +70,11 @@ const WeatherIcon: React.FC<WeatherIconProps> = ({
   const imageName = weatherImages[code];
   if (imageName) {
     return (
-      <img
+      <Image
         src={`${baseUrl}${imageName}`}
         alt="Weather Icon"
-        width={width}
-        height={height}
+        width={25} // Set the desired width
+        height={25} // Set the desired height
       />
     );
   } else {

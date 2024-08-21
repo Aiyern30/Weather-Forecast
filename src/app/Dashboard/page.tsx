@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import {
   Card,
@@ -24,7 +25,10 @@ import { calculateMoonDuration } from "../components/calculation";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import WeatherIcon from "../components/weatherIcon";
 import { Separator } from "@/components/ui/Separator";
-import { fetchHistoryData, fetchWeatherData } from "../api/route";
+import {
+  fetchHistoryData,
+  fetchWeatherData,
+} from "../../../pages/api/utils/route";
 
 interface Location {
   name: string;
@@ -171,7 +175,7 @@ interface WeatherData {
   current: Current;
   forecast: Forecast;
 }
-const page = () => {
+const Page = () => {
   const [city, setCity] = useState("Puchong");
   const [day, setDay] = useState(7);
   const [data, setData] = useState<WeatherData | null>(null);
@@ -287,13 +291,23 @@ const page = () => {
             <CardFooter className="">
               <div className="flex flex-col text-sm space-y-5">
                 <div className="flex items-center space-x-3">
-                  <img src="/map.png" alt="" width={25} height={25} />
+                  <Image
+                    src="/map.png"
+                    alt="Weather Icon"
+                    width={25} // Set the desired width
+                    height={25} // Set the desired height
+                  />
                   <div>
                     {data?.location?.name}, {data?.location?.country}
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <img src="/schedule.png" alt="" width={25} height={25} />
+                  <Image
+                    src="/schedule.png"
+                    alt="Weather Icon"
+                    width={25} // Set the desired width
+                    height={25} // Set the desired height
+                  />
                   <div>{data?.location?.localtime}</div>
                 </div>
               </div>
@@ -307,12 +321,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7] flex flex-col">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/wind.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     Wind Status
                   </CardDescription>
@@ -334,12 +347,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7] flex flex-col">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/uv.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     UV Index
                   </CardDescription>
@@ -357,12 +369,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7] flex flex-col">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/sunset.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     Sunrise & Sunset
                   </CardDescription>
@@ -415,12 +426,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7]">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/humidity.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     Humidity
                   </CardDescription>
@@ -435,12 +445,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7]">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/high-visibility.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     Visibility
                   </CardDescription>
@@ -459,12 +468,11 @@ const page = () => {
               <Card className="w-1/3 hover:bg-[#f7f7f7]">
                 <CardHeader>
                   <CardDescription className="flex items-center">
-                    <img
+                    <Image
                       src="/temperature.png"
-                      alt=""
-                      width={25}
-                      height={25}
-                      className="mr-3"
+                      alt="Weather Icon"
+                      width={25} // Set the desired width
+                      height={25} // Set the desired height
                     />
                     Feels Like
                   </CardDescription>
@@ -562,4 +570,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -26,6 +26,7 @@ const loginNavigation = { link: "../", title: "Login", icon: MdOutlineLogin };
 export const Sidebar = () => {
   const { isLoggined } = useContext(LoginContext); // Access login state here
   const pathname = usePathname(); // Use usePathname from next/navigation
+  console.log("pathname", pathname);
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
 

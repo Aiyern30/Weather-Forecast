@@ -145,7 +145,7 @@ const Page = () => {
       password: "",
       newPassword: "",
     });
-  }, [value]);
+  }, [value, reset, resetPassword]);
 
   const mutation = useMutation(async (data: Profile) => {
     console.log("data", data);

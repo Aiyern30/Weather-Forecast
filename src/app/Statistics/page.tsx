@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import AreaCharts from "../components/chart/areaChart";
 
 import { IoSearchCircleOutline } from "react-icons/io5";
+import Image from "next/image";
 
 import {
   Select,
@@ -15,7 +16,10 @@ import {
 } from "@/components/ui/Select";
 import Error from "@/error";
 import Loading from "@/loading";
-import { fetchHistoryData, fetchWeatherData } from "../api/route";
+import {
+  fetchHistoryData,
+  fetchWeatherData,
+} from "../../../pages/api/utils/route";
 
 interface Location {
   name: string;
@@ -163,7 +167,7 @@ interface WeatherData {
   forecast: Forecast;
 }
 
-const page = () => {
+const Page = () => {
   const [data, setData] = useState<WeatherData | null>(null);
   const [historyData, setHistoryData] = useState(null);
   const [category, setCategory] = useState("temp_c");
@@ -175,7 +179,10 @@ const page = () => {
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [year, setYear] = useState<number>(2024);
-
+  const preprocessIconUrl = (url: string) => {
+    // Check if the URL starts with // and prepend https:
+    return url.startsWith("//") ? `https:${url}` : url;
+  };
   useEffect(() => {
     fetchForeCastData(defaultCity, category, filter);
   }, [defaultCity, category, filter]);
@@ -372,7 +379,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center dark:bg-black"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.temp_c} °C</p>
                           </div>
@@ -387,7 +399,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.precip_mm} mm</p>
                           </div>
@@ -402,7 +419,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.wind_kph} km/h</p>
                           </div>
@@ -417,7 +439,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.humidity} %</p>
                           </div>
@@ -432,7 +459,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.uv} index</p>
                           </div>
@@ -447,7 +479,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.air_quality.co}</p>
                           </div>
@@ -462,7 +499,12 @@ const page = () => {
                             className="flex flex-col justify-center items-center bg-white rounded-xl min-h-56 w-44 text-center"
                           >
                             {hour.condition.text}
-                            <img src={hour.condition.icon} alt="Weather Icon" />
+                            <Image
+                              src={preprocessIconUrl(hour.condition.icon)}
+                              alt="Weather Icon"
+                              width={64} // Set the desired width
+                              height={64} // Set the desired height
+                            />
                             <p>{hour.time}</p>
                             <p>{hour.air_quality.no2}</p>
                           </div>
@@ -483,4 +525,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

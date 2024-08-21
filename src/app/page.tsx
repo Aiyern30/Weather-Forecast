@@ -139,11 +139,10 @@ const Page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[800px]">
-      <div className="w-[1000px] min-h-[500px] flex relative">
+      <div className=" min-h-[500px] flex relative">
         {page === 0 && (
           <>
-            <Card className="w-1/2 bg-green-300"></Card>
-            <Card className="w-1/2 flex items-center justify-center">
+            <Card className="w-full flex items-center justify-center">
               <form onSubmit={handleLogin(onSubmitLogin)}>
                 <div>
                   <CardHeader>
@@ -273,7 +272,7 @@ const Page = () => {
         )}
         {page === 1 && (
           <>
-            <Card className="w-1/2 flex items-center justify-center">
+            <Card className="w-fullflex items-center justify-center">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <CardHeader>
                   <CardTitle className="text-center">
@@ -393,7 +392,6 @@ const Page = () => {
                 </CardFooter>
               </form>
             </Card>
-            <Card className="w-1/2 bg-green-300"></Card>
           </>
         )}
       </div>
