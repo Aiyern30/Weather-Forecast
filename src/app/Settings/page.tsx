@@ -64,195 +64,195 @@ interface Password {
   newPassword: string;
 }
 const Page = () => {
-  const UserID = "96892257-2898-4a9b-9ba7-478e6f794dca";
-  const [value, setValues] = useState({
-    userid: "",
-    // picture: "",
-    username: "",
-    email: "",
-    phone: "",
-    password: "",
-  });
+  // const UserID = "96892257-2898-4a9b-9ba7-478e6f794dca";
+  // const [value, setValues] = useState({
+  //   userid: "",
+  //   // picture: "",
+  //   username: "",
+  //   email: "",
+  //   phone: "",
+  //   password: "",
+  // });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`/api/user?userid=${UserID}`);
-        if (response.ok) {
-          const userData = await response.json();
-          setValues({
-            userid: userData[0]?.userid || "",
-            // picture: userData[0]?.picture || "",
-            username: userData[0]?.username || "",
-            email: userData[0]?.email || "",
-            phone: userData[0]?.noph || "",
-            password: userData[0]?.password || "",
-          });
-        } else {
-          console.error("Failed to fetch user data:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await fetch(`/api/user?userid=${UserID}`);
+  //       if (response.ok) {
+  //         const userData = await response.json();
+  //         setValues({
+  //           userid: userData[0]?.userid || "",
+  //           // picture: userData[0]?.picture || "",
+  //           username: userData[0]?.username || "",
+  //           email: userData[0]?.email || "",
+  //           phone: userData[0]?.noph || "",
+  //           password: userData[0]?.password || "",
+  //         });
+  //       } else {
+  //         console.error("Failed to fetch user data:", response.statusText);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
-  const {
-    register: registerProfile,
-    handleSubmit: handleSubmitProfile,
-    formState: { errors },
-    watch,
-    control,
-    reset,
-  } = useForm({
-    defaultValues: {
-      userid: value.userid,
-      // picture: value.picture,
-      username: value.username,
-      email: value.email,
-      phone: value.phone,
-      // password: "",
-      // newPassword: "",
-    },
-  });
+  // const {
+  //   register: registerProfile,
+  //   handleSubmit: handleSubmitProfile,
+  //   formState: { errors },
+  //   watch,
+  //   control,
+  //   reset,
+  // } = useForm({
+  //   defaultValues: {
+  //     userid: value.userid,
+  //     // picture: value.picture,
+  //     username: value.username,
+  //     email: value.email,
+  //     phone: value.phone,
+  //     // password: "",
+  //     // newPassword: "",
+  //   },
+  // });
 
-  const {
-    register: registerPassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors },
-    control: passwordControl,
-    reset: resetPassword,
-  } = useForm({
-    defaultValues: {
-      userid: value.userid,
-      password: "",
-      newPassword: "",
-    },
-  });
+  // const {
+  //   register: registerPassword,
+  //   handleSubmit: handleSubmitPassword,
+  //   formState: { errors: passwordErrors },
+  //   control: passwordControl,
+  //   reset: resetPassword,
+  // } = useForm({
+  //   defaultValues: {
+  //     userid: value.userid,
+  //     password: "",
+  //     newPassword: "",
+  //   },
+  // });
 
-  useEffect(() => {
-    reset({
-      userid: value.userid,
-      // picture: value.picture,
-      username: value.username,
-      email: value.email,
-      phone: value.phone,
-    });
-    resetPassword({
-      userid: value.userid,
-      password: "",
-      newPassword: "",
-    });
-  }, [value, reset, resetPassword]);
+  // useEffect(() => {
+  //   reset({
+  //     userid: value.userid,
+  //     // picture: value.picture,
+  //     username: value.username,
+  //     email: value.email,
+  //     phone: value.phone,
+  //   });
+  //   resetPassword({
+  //     userid: value.userid,
+  //     password: "",
+  //     newPassword: "",
+  //   });
+  // }, [value, reset, resetPassword]);
 
-  const mutation = useMutation(async (data: Profile) => {
-    console.log("data", data);
-    const response = await fetch(`/api/user?userid=${UserID}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+  // const mutation = useMutation(async (data: Profile) => {
+  //   console.log("data", data);
+  //   const response = await fetch(`/api/user?userid=${UserID}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
 
-    if (!response.ok) {
-      throw new Error("Failed to update user profile!!");
-    }
-    return response.json();
-  });
+  //   if (!response.ok) {
+  //     throw new Error("Failed to update user profile!!");
+  //   }
+  //   return response.json();
+  // });
 
-  const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
+  // const [showAlert, setShowAlert] = useState<boolean>(false);
+  // const [showError, setShowError] = useState<boolean>(false);
 
-  const onSubmitProfile: SubmitHandler<Profile> = async (data) => {
-    try {
-      await mutation.mutateAsync(data);
-      setShowAlert(true); // Show the alert
-      setTimeout(() => setShowAlert(false), 3000);
-    } catch (error) {
-      console.error("Error updating user profile:", error);
-    }
-  };
+  // const onSubmitProfile: SubmitHandler<Profile> = async (data) => {
+  //   try {
+  //     await mutation.mutateAsync(data);
+  //     setShowAlert(true); // Show the alert
+  //     setTimeout(() => setShowAlert(false), 3000);
+  //   } catch (error) {
+  //     console.error("Error updating user profile:", error);
+  //   }
+  // };
 
-  const mutation2 = useMutation(async (data: Password) => {
-    console.log("data2", data);
-    const response = await fetch(`/api/user?userid=${UserID}`, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    });
+  // const mutation2 = useMutation(async (data: Password) => {
+  //   console.log("data2", data);
+  //   const response = await fetch(`/api/user?userid=${UserID}`, {
+  //     method: "PATCH",
+  //     body: JSON.stringify(data),
+  //   });
 
-    console.log("Response", response);
+  //   console.log("Response", response);
 
-    if (response.ok) {
-      return response.text(); // Assuming the response body is text
-    } else {
-      if (response.status === 400) {
-        const errorMessage = await response.text();
-        setShowError(true);
-        setTimeout(() => setShowError(false), 3000);
-        throw new Error(errorMessage);
-      } else {
-        throw new Error("Failed to update user password");
-      }
-    }
-  });
+  //   if (response.ok) {
+  //     return response.text(); // Assuming the response body is text
+  //   } else {
+  //     if (response.status === 400) {
+  //       const errorMessage = await response.text();
+  //       setShowError(true);
+  //       setTimeout(() => setShowError(false), 3000);
+  //       throw new Error(errorMessage);
+  //     } else {
+  //       throw new Error("Failed to update user password");
+  //     }
+  //   }
+  // });
 
-  const onSubmitPassword: SubmitHandler<FieldValues> = async (data) => {
-    console.log("password data", data);
-    try {
-      const response = await mutation2.mutateAsync(data as Password);
-      setShowAlert(true); // Show the alert
-      resetPassword({
-        userid: value.userid,
-        password: "",
-        newPassword: "",
-      });
-      setTimeout(() => setShowAlert(false), 3000);
-    } catch (error) {
-      console.error("Error updating user password:", error);
-    }
-  };
+  // const onSubmitPassword: SubmitHandler<FieldValues> = async (data) => {
+  //   console.log("password data", data);
+  //   try {
+  //     const response = await mutation2.mutateAsync(data as Password);
+  //     setShowAlert(true); // Show the alert
+  //     resetPassword({
+  //       userid: value.userid,
+  //       password: "",
+  //       newPassword: "",
+  //     });
+  //     setTimeout(() => setShowAlert(false), 3000);
+  //   } catch (error) {
+  //     console.error("Error updating user password:", error);
+  //   }
+  // };
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    field: any
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const result = reader.result;
-          if (result && typeof result === "string") {
-            setSelectedImage(result);
-            field.onChange(result); // Set the value of the picture field in the form
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  };
+  // const handleFileChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  //   field: any
+  // ) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         const result = reader.result;
+  //         if (result && typeof result === "string") {
+  //           setSelectedImage(result);
+  //           field.onChange(result); // Set the value of the picture field in the form
+  //         }
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   }
+  // };
 
-  const [background, setBackground] = useState("#561ecb");
+  // const [background, setBackground] = useState("#561ecb");
 
-  const handleChangeComplete = (color: ColorResult) => {
-    setBackground(color.hex);
-  };
+  // const handleChangeComplete = (color: ColorResult) => {
+  //   setBackground(color.hex);
+  // };
 
-  const [textSize, setTextSize] = useState(16);
+  // const [textSize, setTextSize] = useState(16);
 
-  const handleTextSizeChange = (newValue: number[]) => {
-    setTextSize(newValue[0]);
-  };
+  // const handleTextSizeChange = (newValue: number[]) => {
+  //   setTextSize(newValue[0]);
+  // };
 
   return (
     <>
-      <Tabs defaultValue="Account" className="w-full">
+      {/* <Tabs defaultValue="Account" className="w-full">
         <TabsList>
           <TabsTrigger value="Account">Account</TabsTrigger>
           <TabsTrigger value="Appearance">Appearance</TabsTrigger>
@@ -308,34 +308,7 @@ const Page = () => {
                         />
                       </div>
 
-                      {/* <div className="flex flex-col space-y-1.5">
-                        <Label>Profile Image</Label>
-                        <Controller
-                          name="picture"
-                          control={control}
-                          render={({ field }) => (
-                            <div className="flex items-center space-x-5">
-                              <div>
-                                <Avatar className="w-36 h-36">
-                                  {selectedImage ? (
-                                    <AvatarImage src={selectedImage} />
-                                  ) : (
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                  )}
-                                </Avatar>
-                              </div>
-                              <div>
-                                <Input
-                                  id="picture"
-                                  type="file"
-                                  onChange={(e) => handleFileChange(e, field)}
-                                  accept=".jpg, .jpeg, .png"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        />
-                      </div> */}
+                      
 
                       <div className="flex flex-col space-y-1.5">
                         <Label>Username</Label>
@@ -815,7 +788,8 @@ const Page = () => {
             </Button>
           </div>
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
+      <div>hi</div>
     </>
   );
 };

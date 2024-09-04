@@ -2,7 +2,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useMutation } from "react-query";
 import AlertUI from "./alert";
 import { Button } from "@/components/ui/Button";
 import {
@@ -41,12 +40,13 @@ const Page = () => {
   const { setIsLoggined } = useContext(LoginContext); // Access setIsLoggined from context
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<Profile>({
     defaultValues: {
       username: "",
       password: "",
@@ -55,31 +55,29 @@ const Page = () => {
     },
   });
 
-  const mutation = useMutation(async (data: Profile) => {
-    const response = await fetch(`/api/user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-      throw new Error("Failed to register account !!");
-    }
-  });
   const onSubmit: SubmitHandler<Profile> = async (data) => {
     try {
-      await mutation.mutateAsync(data);
+      const response = await fetch(`/api/user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        setShowError(true);
+        setTimeout(() => setShowError(false), 3000);
+        throw new Error("Failed to register account !!");
+      }
+
       setShowAlert(true); // Show the alert
       setTimeout(() => {
         setShowAlert(false);
         setPage(0);
       }, 3000);
     } catch (error) {
-      console.error("Error create account:", error);
+      console.error("Error creating account:", error);
     }
   };
 
@@ -88,47 +86,36 @@ const Page = () => {
     handleSubmit: handleLogin,
     control: controlLogin,
     formState: { errors: errorsLogin },
-  } = useForm({
+  } = useForm<Login>({
     defaultValues: {
       username: "",
       password: "",
       email: "",
     },
   });
+
   const router = useRouter();
 
-  const mutation2 = useMutation(async (data: Login) => {
-    const response = await fetch(`/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+  const onSubmitLogin: SubmitHandler<Login> = async (data) => {
+    try {
+      const response = await fetch(`/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
-      throw new Error("Failed to login account !!");
-    } else {
+      if (!response.ok) {
+        setShowError(true);
+        setTimeout(() => setShowError(false), 3000);
+        throw new Error("Failed to login account !!");
+      }
+
       setIsLoggined(true); // Update the login state
       router.push("/Dashboard");
-    }
-  });
-
-  const onSubmitLogin: SubmitHandler<Login> = async (data) => {
-    console.log("data", data);
-    try {
-      await mutation2.mutateAsync(data);
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        setPage(0);
-        // No need to explicitly render the Sidebar here, state update will trigger re-render
-        // router.push("/Dashboard");
-      }, 3000);
     } catch (error) {
-      console.error("Error login account:", error);
+      console.error("Error logging in:", error);
     }
   };
 
@@ -139,161 +126,31 @@ const Page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[800px]">
-      <div className=" min-h-[500px] flex relative">
+      <div className="min-h-[500px] flex relative">
         {page === 0 && (
-          <>
-            <Card className="w-full flex items-center justify-center">
-              <form onSubmit={handleLogin(onSubmitLogin)}>
-                <div>
-                  <CardHeader>
-                    <CardTitle className="text-center">
-                      Login an account
-                    </CardTitle>
-                    <CardDescription className="text-center">
-                      Enter your email below to login your account
-                    </CardDescription>
-                  </CardHeader>
-                  {showAlert && (
-                    <AlertUI
-                      error={false}
-                      message="Successfully login"
-                      title="Profile login successfully"
-                    />
-                  )}
-                  {showError && (
-                    <AlertUI
-                      error={true}
-                      message="Either email, phone number of password entering wrong!"
-                      title="Profile login unsuccessfully"
-                    />
-                  )}
-                  <CardContent>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Label>Username</Label>
-                      <Controller
-                        name="username"
-                        control={controlLogin}
-                        rules={{
-                          required: "Username is required",
-                          minLength: {
-                            value: 4,
-                            message: "Minimum 4 characters required",
-                          },
-                          maxLength: {
-                            value: 20,
-                            message: "Maximum 20 characters only",
-                          },
-                        }}
-                        render={() => (
-                          <Input
-                            id="Username"
-                            placeholder="Your Username"
-                            {...registerLogin("username")}
-                          />
-                        )}
-                      />
-                    </div>
-                    <span className="text-red-400">
-                      {errorsLogin.username?.message}
-                    </span>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Label>Email</Label>
-                      <Controller
-                        name="email"
-                        control={controlLogin}
-                        render={({ field }) => (
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="Your email"
-                            {...field}
-                            {...registerLogin("email")}
-                          />
-                        )}
-                        rules={{
-                          required: "Email is Required",
-                          maxLength: {
-                            value: 50,
-                            message: "Maximum is 50 characters",
-                          },
-                          validate: (value) =>
-                            value.endsWith("@gmail.com") ||
-                            "Email must be a valid Gmail address",
-                        }}
-                      />
-                    </div>
-                    <span className="text-red-400">
-                      {errorsLogin.email?.message}
-                    </span>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Label>Password</Label>
-                      <Controller
-                        name="password"
-                        control={controlLogin}
-                        rules={{
-                          required: "Password is required",
-                          minLength: {
-                            value: 8,
-                            message: "Password 8 characters required",
-                          },
-                          maxLength: {
-                            value: 64,
-                            message: "Maximum 64 characters only",
-                          },
-                        }}
-                        render={() => (
-                          <Input
-                            id="password"
-                            placeholder="Your Password"
-                            {...registerLogin("password")}
-                          />
-                        )}
-                      />
-                    </div>
-                    <span className="text-red-400">
-                      {errorsLogin.password?.message}
-                    </span>
-                    <Button className="w-full">Login</Button>
-                    <div className="mb-3 my-0.5 text-center">Or</div>
-                    <Button className="w-full">
-                      <Mail className="mr-2 h-4 w-4" /> Login with Email
-                    </Button>
-                  </CardContent>
-                  <Separator />
-                  <CardFooter className="">
-                    <Button variant="link" onClick={() => setPage(1)}>
-                      Havent Register Acccount?
-                    </Button>
-                  </CardFooter>
-                </div>
-              </form>
-            </Card>
-          </>
-        )}
-        {page === 1 && (
-          <>
-            <Card className="w-fullflex items-center justify-center">
-              <form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-full flex items-center justify-center">
+            <form onSubmit={handleLogin(onSubmitLogin)}>
+              <div>
                 <CardHeader>
                   <CardTitle className="text-center">
-                    Register an account
+                    Login an account
                   </CardTitle>
                   <CardDescription className="text-center">
-                    Enter your details below to create an account
+                    Enter your email below to login your account
                   </CardDescription>
                 </CardHeader>
                 {showAlert && (
                   <AlertUI
                     error={false}
-                    message="Successfully register"
-                    title="Profile registration successfully"
+                    message="Successfully logged in"
+                    title="Profile login successfully"
                   />
                 )}
                 {showError && (
                   <AlertUI
                     error={true}
-                    message="There was a problem registering the account"
-                    title="Profile registration unsuccessfully"
+                    message="Either email, phone number or password is incorrect!"
+                    title="Profile login unsuccessfully"
                   />
                 )}
                 <CardContent>
@@ -301,7 +158,7 @@ const Page = () => {
                     <Label>Username</Label>
                     <Controller
                       name="username"
-                      control={control}
+                      control={controlLogin}
                       rules={{
                         required: "Username is required",
                         minLength: {
@@ -318,28 +175,18 @@ const Page = () => {
                           id="username"
                           placeholder="Your Username"
                           {...field}
-                          {...register("username")}
                         />
                       )}
                     />
                   </div>
                   <span className="text-red-400">
-                    {errors.username?.message}
+                    {errorsLogin.username?.message}
                   </span>
                   <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label>Email</Label>
                     <Controller
                       name="email"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="Your email"
-                          {...field}
-                          {...register("email")}
-                        />
-                      )}
+                      control={controlLogin}
                       rules={{
                         required: "Email is Required",
                         maxLength: {
@@ -350,22 +197,24 @@ const Page = () => {
                           value.endsWith("@gmail.com") ||
                           "Email must be a valid Gmail address",
                       }}
+                      render={({ field }) => (
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Your email"
+                          {...field}
+                        />
+                      )}
                     />
                   </div>
-                  <span className="text-red-400">{errors.email?.message}</span>
+                  <span className="text-red-400">
+                    {errorsLogin.email?.message}
+                  </span>
                   <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label>Password</Label>
                     <Controller
                       name="password"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="password"
-                          placeholder="Your Password"
-                          {...field}
-                          {...register("password")}
-                        />
-                      )}
+                      control={controlLogin}
                       rules={{
                         required: "Password is required",
                         minLength: {
@@ -377,22 +226,148 @@ const Page = () => {
                           message: "Maximum 64 characters only",
                         },
                       }}
+                      render={({ field }) => (
+                        <Input
+                          id="password"
+                          placeholder="Your Password"
+                          {...field}
+                        />
+                      )}
                     />
                   </div>
                   <span className="text-red-400">
-                    {errors.password?.message}
+                    {errorsLogin.password?.message}
                   </span>
-                  <Button className="w-full">Register</Button>
+                  <Button className="w-full">Login</Button>
+                  <div className="mb-3 my-0.5 text-center">Or</div>
+                  <Button className="w-full">
+                    <Mail className="mr-2 h-4 w-4" /> Login with Email
+                  </Button>
                 </CardContent>
                 <Separator />
                 <CardFooter className="">
-                  <Button variant="link" onClick={() => setPage(0)}>
-                    Already have an account?
+                  <Button variant="link" onClick={() => setPage(1)}>
+                    Haven't Registered an Account?
                   </Button>
                 </CardFooter>
-              </form>
-            </Card>
-          </>
+              </div>
+            </form>
+          </Card>
+        )}
+        {page === 1 && (
+          <Card className="w-full flex items-center justify-center">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <CardHeader>
+                <CardTitle className="text-center">
+                  Register an account
+                </CardTitle>
+                <CardDescription className="text-center">
+                  Enter your details below to create an account
+                </CardDescription>
+              </CardHeader>
+              {showAlert && (
+                <AlertUI
+                  error={false}
+                  message="Successfully registered"
+                  title="Profile registration successfully"
+                />
+              )}
+              {showError && (
+                <AlertUI
+                  error={true}
+                  message="There was a problem registering the account"
+                  title="Profile registration unsuccessfully"
+                />
+              )}
+              <CardContent>
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label>Username</Label>
+                  <Controller
+                    name="username"
+                    control={control}
+                    rules={{
+                      required: "Username is required",
+                      minLength: {
+                        value: 4,
+                        message: "Minimum 4 characters required",
+                      },
+                      maxLength: {
+                        value: 20,
+                        message: "Maximum 20 characters only",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="username"
+                        placeholder="Your Username"
+                        {...field}
+                      />
+                    )}
+                  />
+                </div>
+                <span className="text-red-400">{errors.username?.message}</span>
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label>Email</Label>
+                  <Controller
+                    name="email"
+                    control={control}
+                    rules={{
+                      required: "Email is Required",
+                      maxLength: {
+                        value: 50,
+                        message: "Maximum is 50 characters",
+                      },
+                      validate: (value) =>
+                        value.endsWith("@gmail.com") ||
+                        "Email must be a valid Gmail address",
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Your email"
+                        {...field}
+                      />
+                    )}
+                  />
+                </div>
+                <span className="text-red-400">{errors.email?.message}</span>
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label>Password</Label>
+                  <Controller
+                    name="password"
+                    control={control}
+                    rules={{
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password 8 characters required",
+                      },
+                      maxLength: {
+                        value: 64,
+                        message: "Maximum 64 characters only",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="password"
+                        placeholder="Your Password"
+                        {...field}
+                      />
+                    )}
+                  />
+                </div>
+                <span className="text-red-400">{errors.password?.message}</span>
+                <Button className="w-full">Register</Button>
+              </CardContent>
+              <Separator />
+              <CardFooter className="">
+                <Button variant="link" onClick={() => setPage(0)}>
+                  Already have an account?
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
         )}
       </div>
     </div>
