@@ -16,11 +16,11 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
 import { Mail } from "lucide-react";
-import { LoginContext } from "@/app/LoginContext"; // Import the context
+import { LoginContext } from "@/app/LoginContext";
 import {
   loadThemeFromLocalStorage,
   applyTheme,
-} from "../../pages/api/utils/theme"; // Import utility functions
+} from "../../pages/api/utils/theme";
 
 interface Profile {
   username: string;
@@ -37,9 +37,21 @@ interface Login {
 
 const Page = () => {
   const [page, setPage] = useState<number>(0);
-  const { setIsLoggined } = useContext(LoginContext); // Access setIsLoggined from context
+  const { setIsLoggined } = useContext(LoginContext);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      const theme = loadThemeFromLocalStorage();
+      applyTheme(theme);
+    }
+  }, [isClient]);
 
   const {
     register,
@@ -71,7 +83,7 @@ const Page = () => {
         throw new Error("Failed to register account !!");
       }
 
-      setShowAlert(true); // Show the alert
+      setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
         setPage(0);
@@ -112,22 +124,17 @@ const Page = () => {
         throw new Error("Failed to login account !!");
       }
 
-      setIsLoggined(true); // Update the login state
+      setIsLoggined(true);
       router.push("/Dashboard");
     } catch (error) {
       console.error("Error logging in:", error);
     }
   };
 
-  useEffect(() => {
-    const theme = loadThemeFromLocalStorage();
-    applyTheme(theme);
-  }, []);
-
   return (
-    <div className="flex justify-center items-center min-h-[800px]">
+    <div className="flex justify-center items-center ">
       <div className="min-h-[500px] flex relative">
-        {page === 0 && (
+        {isClient && page === 0 && (
           <Card className="w-full flex items-center justify-center">
             <form onSubmit={handleLogin(onSubmitLogin)}>
               <div>
@@ -254,7 +261,7 @@ const Page = () => {
             </form>
           </Card>
         )}
-        {page === 1 && (
+        {isClient && page === 1 && (
           <Card className="w-full flex items-center justify-center">
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardHeader>

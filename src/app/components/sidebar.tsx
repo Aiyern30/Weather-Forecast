@@ -18,7 +18,7 @@ const information = [
   { link: "/Statistics", title: "Statistics", icon: FaChartBar },
   // { link: "/Maps", title: "Maps", icon: FiMapPin },
   // { link: "/Calander", title: "Calander", icon: FaRegCalendarAlt },
-  { link: "/Settings", title: "Settings", icon: CiSettings },
+  // { link: "/Settings", title: "Settings", icon: CiSettings },
 ];
 
 const loginNavigation = { link: "../", title: "Login", icon: MdOutlineLogin };
@@ -44,12 +44,12 @@ export const Sidebar = () => {
   return (
     <div
       className={cn(
-        "w-[200px] h-auto bg-[#ffffff] dark:bg-slate-800 rounded-xl"
+        "w-[200px] h-auto bg-[#ffffff] dark:bg-[#1E1E1E] rounded-xl"
       )}
     >
       <div className="h-[100px] p-20 justify-center flex flex-col items-center space-x-2 cursor-pointer">
         <Avatar className="w-20 h-20 ">
-          <AvatarImage src="/logo/logo.png" />
+          <AvatarImage src="/logo/Logo.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="text-justify text-3xl text-black font-bold dark:text-white">

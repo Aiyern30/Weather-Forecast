@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -8,10 +7,19 @@ import { LoginProvider } from "./LoginContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+export const metadata: Metadata = {
+  title: "Weather Forecast",
+  description: "Created by Ian Gan",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body className="flex gap-[25px] p-[25px] dark:bg-black">
+      <body className="flex gap-[25px] p-[25px] dark:bg-[#0F0F0F]">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -20,7 +28,7 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         >
           <LoginProvider>
             <Sidebar />
-            <div className="bg-[rgb(246,246,248)] w-full rounded-xl p-[30px] overflow-auto min-w-[1600px] dark:bg-slate-800">
+            <div className="bg-[rgb(246,246,248)] w-full rounded-xl p-[30px] overflow-auto h-[100vh] dark:bg-[#1E1E1E]">
               {children}
             </div>
           </LoginProvider>
@@ -28,6 +36,4 @@ const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}
